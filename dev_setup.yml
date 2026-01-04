@@ -1,0 +1,38 @@
+---
+- name: Developer Sandbox
+  hosts: webservers
+  become: true
+
+  vars:
+    - project_name: "Project-Alpha"
+
+  tasks:
+    - name: Update Cache
+      ansible.builtin.apt:
+        update_cache: true
+
+    - name: System Preparation
+      ansible.builtin.apt:
+        name:
+          - git
+          - tree
+        state: present
+
+    - name: User Management
+      ansible.builtin.user:
+        name: intern
+        shell: /bin/bash
+
+    - name: Filesystem & Security
+      ansible.builtin.file:
+        path: /opt/dev_tools
+        owner: intern
+        group: intern
+        mode: 0755
+        state: directory
+
+    - name: Custom Branding
+      ansible.builtin.copy:
+        content: "Welcome to {{ project_name }}"
+        dest: /etc/motd
+        

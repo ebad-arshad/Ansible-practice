@@ -1,0 +1,28 @@
+- name: Installing via loop
+  ansible.builtin.apt:
+    name: "{{ item }}"
+    state: present      
+  loop:
+    - nginx
+    - zip
+    - curl
+
+- name: Create file
+  ansible.builtin.copy:
+    dest: /var/www/html/index.html
+    content: "<h1>Hello {{ user_name }}</h1>"
+  notify: 
+  - restart nginx
+  - save the log
+
+- name: Create file with conditions
+  ansible.builtin.file:
+    dest: /tmp/i_am_webserver1.txt
+    state: touch
+  when: inventory_hostname == "server_1"
+
+- name: Delete user
+  ansible.builtin.user:
+    name: intern
+    remove: true
+    state: absent 

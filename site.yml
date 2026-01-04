@@ -1,0 +1,32 @@
+---
+- name: Sync Web Servers to Master Config
+  hosts: webservers
+  become: true
+
+  tasks:
+    - name: Update apt cache if it's older than 1 hour
+      apt:
+        update_cache: true
+        cache_valid_time: 3600
+    - name: Ensure Nginx is installed
+      apt:
+        name: nginx
+        state: present
+
+    - name: Set the hostname
+      lineinfile:
+        path: /etc/hostname
+        regexp: '^.*$'
+        line: "pro-web-server"
+
+    - name: Configure DB URL
+      lineinfile:
+        path: /etc/environment
+        regexp: '^DB_URL='
+        line: "DB_URL=mongodb://your_public_ip:27017"
+
+    - name: Ensure Nginx is running
+      service:
+        name: nginx
+        state: started
+        enabled: yes

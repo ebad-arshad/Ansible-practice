@@ -1,0 +1,7 @@
+- name: restart nginx
+  ansible.builtin.service:
+    name: nginx
+    state: restarted
+
+- name: save the log
+  ansible.builtin.command: echo "restarted nginx at $(date)" >> /home/ubuntu/logs.txt
